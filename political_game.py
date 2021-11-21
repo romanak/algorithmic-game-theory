@@ -10,7 +10,7 @@ Is a Two-Party Election Game?"
 
 @author: Roman Akchurin
 """
-
+import numpy as np
 
 class LinearLink(object):
     """Linear link model for computing the winning odds for a party."""
