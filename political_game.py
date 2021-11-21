@@ -179,17 +179,26 @@ class PoliticalGame(object):
         optimal_state = self.get_optimal_state(a, b, social_welfare)
         (PNE_pos, PNE_val) = self.get_worst_PNE(a, b, social_welfare)
         PoA = self.get_PoA(optimal_state, PNE_val)
-        return (A, a, B, b, PNE_pos, PNE_val, PoA)
+        return (A, B, a, b, PNE_pos, PNE_val, PoA)
 
     def run_iterations(self):
         """Run election `self.iterations` times."""
         for i in range(self.iterations):
-            (A, a, B, b, PNE_pos, PNE_val, PoA) = self.run_election()
-            self.history.append((A, a, B, b, PNE_pos, PNE_val, PoA))
+            (A, B, a, b, PNE_pos, PNE_val, PoA) = self.run_election()
+            self.history.append((A, B, a, b, PNE_pos, PNE_val, PoA))
+            if (i+1)%(self.iterations/10) == 0:
+                print(f'Iteration {i+1:6d} POA: {PoA:.2f} PNE position: {PNE_pos}')
+                print(f" | A {A.shape} | B {B.shape} | a {a.shape} | b {b.shape} | ")
+                print(np.array2string(np.c_[A,B,a,b], precision=2, floatmode='fixed'))
+
+        worst_PoA = max([record[-1] for record in self.history if record[-1]])
+        n_PNEs = len([record[5] for record in self.history if record[5]])
+        print(f'Model: {self.model.__name__}')
+        print(f'Worst PoA: {worst_PoA:.2f}')
+        print(f'Number of PNE: {n_PNEs}/{self.iterations}')
 
 if __name__ == "__main__":
     polgame = PoliticalGame(num_candidates=2, social_bound=100, \
-        model=LinearLink, swing_voters=True, iterations=100, \
+        model=LinearLink, swing_voters=True, iterations=100000, \
         force_egoism=False, seed=0)
     polgame.run_iterations()
-    print(polgame.history)
