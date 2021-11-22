@@ -77,14 +77,12 @@ class Softmax(object):
 
 class PoliticalGame(object):
     """Political game object implementation."""
-    def __init__(self, num_candidates=2, social_bound=100, \
-        model=LinearLink, swing_voters=True, iterations=100, \
-        force_egoism=False, seed=None):
+    def __init__(self, num_candidates=2, social_bound=100, model=LinearLink, \
+        swing_voters=True, force_egoism=False, seed=None):
         self.num_candidates = num_candidates
         self.social_bound = social_bound
         self.model = model
         self.swing_voters = swing_voters
-        self.iterations = iterations
         self.force_egoism = force_egoism
         self.rng = np.random.default_rng(seed)
         self.history = list()
@@ -222,14 +220,14 @@ class PoliticalGame(object):
         PoA = self.get_PoA(optimal_state, PNE_val)
         return (A, B, P, a, b, PNE_pos, PNE_val, PoA)
 
-    def run_iterations(self):
-        """Runs election `self.iterations` times. The history is stored in
+    def run_iterations(self, iterations):
+        """Runs election `iterations` times. The history is stored in
         `self.history` class variable for further analysis."""
-        for i in range(self.iterations):
+        for i in range(iterations):
             (A, B, P, a, b, PNE_pos, PNE_val, PoA) = self.run_election()
             self.history.append((A, B, P, a, b, PNE_pos, PNE_val, PoA))
-            if (i+1)%(self.iterations//10) == 0:
-                print(f"Iteration: {i+1:6d}/{self.iterations} " +\
+            if (i+1)%(iterations//10) == 0:
+                print(f"Iteration: {i+1:6d}/{iterations} " +\
                     f"POA: {PoA:.2f} PNE position: {PNE_pos}")
                 print(f" | A {A.shape} | B {B.shape} | P {P.shape}" + \
                     f" | a {a.shape} | b {b.shape} | ")
@@ -238,12 +236,12 @@ class PoliticalGame(object):
 
         worst_PoA = max([record[-1] for record in self.history])
         n_PNEs = len([record[-2] for record in self.history if record[-2]])
+        n_records = len(self.history)
         print(f'Model: {self.model.__name__}')
         print(f'Worst PoA: {worst_PoA:.2f}')
-        print(f'Found PNE: {n_PNEs}/{self.iterations}')
+        print(f'Found PNE: {n_PNEs}/{n_records}')
 
 if __name__ == "__main__":
     polgame = PoliticalGame(num_candidates=2, social_bound=100, \
-        model=LinearLink, swing_voters=True, iterations=100000, \
-        force_egoism=False, seed=0)
-    polgame.run_iterations()
+        model=LinearLink, swing_voters=True, force_egoism=False, seed=0)
+    polgame.run_iterations(100000)
