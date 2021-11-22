@@ -127,8 +127,7 @@ class PoliticalGame(object):
         party B.
 
         Return a boolean value True or False."""
-        m = A.shape[0] # number of candidates in party A
-        for i in range(m):
+        for i in range(self.num_candidates):
             if A[i,0] <= B[:,1].max() or B[i,0] <= A[:,1].max():
                 return False
         return True
@@ -243,5 +242,5 @@ class PoliticalGame(object):
 
 if __name__ == "__main__":
     polgame = PoliticalGame(num_candidates=2, social_bound=100, \
-        model=LinearLink, swing_voters=True, force_egoism=False, seed=0)
-    polgame.run_iterations(100000)
+        model=LinearLink, swing_voters=True, force_egoism=True, seed=0)
+    polgame.run_iterations(1000)
