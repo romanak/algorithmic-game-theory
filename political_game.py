@@ -236,8 +236,8 @@ class PoliticalGame(object):
                 print(np.array2string(np.c_[A,B,P,a,b], precision=2, \
                     floatmode='fixed'))
 
-        worst_PoA = max([record[-1] for record in self.history if record[-1]])
-        n_PNEs = len([record[5] for record in self.history if record[5]])
+        worst_PoA = max([record[-1] for record in self.history])
+        n_PNEs = len([record[-2] for record in self.history if record[-2]])
         print(f'Model: {self.model.__name__}')
         print(f'Worst PoA: {worst_PoA:.2f}')
         print(f'Found PNE: {n_PNEs}/{self.iterations}')
