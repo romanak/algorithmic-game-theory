@@ -104,12 +104,12 @@ class PoliticalGame(object):
         else:
             voter_types = 3 # adding swing voters
         # create the first dummy candidate
-        party = np.zeros((1,voter_types), dtype=np.int8)
+        party = np.zeros((1,voter_types), dtype=np.int64)
         for i in range(self.num_candidates):
             while True:
                 # create candidates one by one
                 candidate = self.rng.integers(0, self.social_bound, \
-                    size=(1,voter_types), dtype=np.int8, endpoint=True)
+                    size=(1,voter_types), dtype=np.int64, endpoint=True)
                 if np.sum(candidate.sum(axis=1) <= self.social_bound) == 1:
                     break
             party = np.vstack((party,candidate))
