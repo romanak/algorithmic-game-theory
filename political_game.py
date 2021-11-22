@@ -2,20 +2,26 @@
 
 # -*- coding: utf-8 -*-
 """
-Created on Sun Nov 11 2021
+Created on Sun Nov 21 2021
 
 Midterm project to implement the political game for Algorithmic Game Theory
 class at Tamkang University. Based on Chuang-Chieh Lin et al. paper "How Good
-Is a Two-Party Election Game?"
+Is a Two-Party Election Game?" (https://arxiv.org/abs/2001.05692)
 
-@author: Roman Akchurin
+@author: Roman Akchurin (https://romanakchurin.com)
 """
 import numpy as np
 
 class LinearLink(object):
-    """Linear link model for computing the winning odds for a party."""
+    """Linear Link model for computing the winning odds for a party."""
     @staticmethod
     def fn(A, B, social_bound):
+        """Takes `A` the utility matrix for party A, `B` the utility matrix for
+        party B, `social_bound` the social bound constraint.
+
+        Returns `P` the probabilities of winning of a candidate `i` of party A
+        against the competing candidate `j` of party B as two-dimensional Numpy
+        array according to the Linear Link model."""
         m = A.shape[0] # number of candidates in party A
         n = B.shape[0] # number of candidates in party B
         
@@ -31,8 +37,12 @@ class BradleyTerry(object):
     """Bradley-Terry model for computing the winning odds for a party."""
     @staticmethod
     def fn(A, B, social_bound):
-        """Bradley-Terry model formulates a candidate `i` winning odds
-        against the competing candidate `j`."""
+        """Takes `A` the utility matrix for party A, `B` the utility matrix for
+        party B, `social_bound` the social bound constraint.
+
+        Returns `P` the probabilities of winning of a candidate `i` of party A
+        against the competing candidate `j` of party B as two-dimensional Numpy
+        array according to the Bradley-Terry model."""
         m = A.shape[0] # number of candidates in party A
         n = B.shape[0] # number of candidates in party B
         
@@ -48,6 +58,12 @@ class Softmax(object):
     """Softmax model for computing the winning odds for a party."""
     @staticmethod
     def fn(A, B, social_bound):
+        """Takes `A` the utility matrix for party A, `B` the utility matrix for
+        party B, `social_bound` the social bound constraint.
+
+        Returns `P` the probabilities of winning of a candidate `i` of party A
+        against the competing candidate `j` of party B as two-dimensional Numpy
+        array according to the Softmax model."""
         m = A.shape[0] # number of candidates in party A
         n = B.shape[0] # number of candidates in party B
         
@@ -83,8 +99,8 @@ class PoliticalGame(object):
             (b) supporters for the opposing party;
             (c) swing voters
 
-        Returns a party as a utility matrix."""
-        
+        Returns the generated party utility matrix as two-dimensional Numpy
+        array."""
         if self.swing_voters == False:
             voter_types = 2 # default types of supporters
         else:
@@ -106,7 +122,13 @@ class PoliticalGame(object):
         return party
 
     def confirm_egoism(self, A, B):
-        """Check whether the selected pair of parties `A` and `B` are agoistic."""
+        """Test whether the selected pair of parties `A` and `B` are
+        egoistic.
+
+        Takes `A` the utility matrix for party A, `B` the utility matrix for
+        party B.
+
+        Return a boolean value True or False."""
         m = A.shape[0] # number of candidates in party A
         for i in range(m):
             if A[i,0] <= B[:,1].max() or B[i,0] <= A[:,1].max():
@@ -114,13 +136,15 @@ class PoliticalGame(object):
         return True
 
     def get_payoffs(self, A, B, P):
-        """Compute the payoffs of two-party election game as expected utilities.
+        """Compute the payoffs of a two-party election game as expected
+        utilities.
         
         Takes `A` the utility matrix for party A, `B` the utility matrix for
         party B, `P` the probabilities of winning according to the selected
         model.
         
-        Reurns `a` the payoffs of party `A`, `b` the payoffs of party `B`"""
+        Returns `a` the payoffs of party `A`, `b` the payoffs of party `B` as
+        two-dimensional Numpy arrays."""
         a = np.zeros((self.num_candidates,self.num_candidates))
         b = np.zeros((self.num_candidates,self.num_candidates))
         
@@ -131,17 +155,23 @@ class PoliticalGame(object):
         return (a,b)
 
     def get_optimal_state(self, a, b, social_welfare):
-        """Optimal state has the highest social welfare among all possible states.
-        Takes payoff `a` of party A and payoff `b` of party B
-        returns the best social welfare value."""
+        """Computes the optimal state, which has the highest social welfare
+        among all possible states.
+
+        Takes payoff `a` of party A and payoff `b` of party B.
+
+        Returns the best social welfare value as a float."""
         max_idx = np.unravel_index(np.argmax(social_welfare, axis=None), \
             social_welfare.shape)
         return social_welfare[max_idx]
 
     def get_worst_PNE(self, a, b, social_welfare):
-        """Pure Nash Equilibrium;
-        Takes payoff `a` of party A and payoff `b` of party B
-        returns position and worst pure nash equilibrium"""
+        """Computes Pure Nash Equilibrium.
+
+        Takes payoff `a` of party A and payoff `b` of party B.
+
+        Returns position as a tuple and worst pure nash equilibrium as 
+        a float."""
         PNEs = list()
 
         for i in range(self.num_candidates):
@@ -157,14 +187,25 @@ class PoliticalGame(object):
             return ((None, None), None)
 
     def get_PoA(self, optimal_state, PNE_val):
-        """Calculate the price of anarchy."""
+        """Calculates the price of anarchy.
+
+        Takes `optimal_state` the highest social welfare and `PNE_val` the
+        value of the worst Pure Nash Equilibrium.
+
+        Returns the Price of Anarchy as a float."""
         if PNE_val == None or PNE_val == 0:
             return 0
         else:
             return optimal_state / PNE_val
 
     def run_election(self):
-        """Run election once"""
+        """Runs the election process once.
+
+        Returns `A` the utility matrix for party A, `B` the utility matrix for
+        party B, `a` the payoffs of party A, `b` the payoffs of party B,
+        `PNE_pos` the position of worst Pure Nash Equilibrium, `PNE_val` the
+        value of worst Pure Nash Equilibrium, `PoA` the Price of Anarchy,
+        all packed into a single tuple for further recording in the history."""
         A = self.generate_party()
         B = self.generate_party()
 
@@ -179,23 +220,27 @@ class PoliticalGame(object):
         optimal_state = self.get_optimal_state(a, b, social_welfare)
         (PNE_pos, PNE_val) = self.get_worst_PNE(a, b, social_welfare)
         PoA = self.get_PoA(optimal_state, PNE_val)
-        return (A, B, a, b, PNE_pos, PNE_val, PoA)
+        return (A, B, P, a, b, PNE_pos, PNE_val, PoA)
 
     def run_iterations(self):
-        """Run election `self.iterations` times."""
+        """Runs election `self.iterations` times. The history is stored in
+        `self.history` class variable for further analysis."""
         for i in range(self.iterations):
-            (A, B, a, b, PNE_pos, PNE_val, PoA) = self.run_election()
-            self.history.append((A, B, a, b, PNE_pos, PNE_val, PoA))
-            if (i+1)%(self.iterations/10) == 0:
-                print(f'Iteration {i+1:6d} POA: {PoA:.2f} PNE position: {PNE_pos}')
-                print(f" | A {A.shape} | B {B.shape} | a {a.shape} | b {b.shape} | ")
-                print(np.array2string(np.c_[A,B,a,b], precision=2, floatmode='fixed'))
+            (A, B, P, a, b, PNE_pos, PNE_val, PoA) = self.run_election()
+            self.history.append((A, B, P, a, b, PNE_pos, PNE_val, PoA))
+            if (i+1)%(self.iterations//10) == 0:
+                print(f"Iteration: {i+1:6d}/{self.iterations} " +\
+                    f"POA: {PoA:.2f} PNE position: {PNE_pos}")
+                print(f" | A {A.shape} | B {B.shape} | P {P.shape}" + \
+                    f" | a {a.shape} | b {b.shape} | ")
+                print(np.array2string(np.c_[A,B,P,a,b], precision=2, \
+                    floatmode='fixed'))
 
         worst_PoA = max([record[-1] for record in self.history if record[-1]])
         n_PNEs = len([record[5] for record in self.history if record[5]])
         print(f'Model: {self.model.__name__}')
         print(f'Worst PoA: {worst_PoA:.2f}')
-        print(f'Number of PNE: {n_PNEs}/{self.iterations}')
+        print(f'Found PNE: {n_PNEs}/{self.iterations}')
 
 if __name__ == "__main__":
     polgame = PoliticalGame(num_candidates=2, social_bound=100, \
