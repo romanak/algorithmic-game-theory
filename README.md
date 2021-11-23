@@ -2,24 +2,7 @@
 
 ## Political game
 
-The implementation of the political game is based on the paper Chuang-Chieh Lin et al. [How Good Is a Two-Party Election Game?](https://arxiv.org/abs/2001.05692), 2020.
-
-### Assumptions
-
-- There are two parties as strategic players according to the Duverger's law.
-- Every party has the same number of candidates.
-- Each party is represented as a matrix of utility values.
-- Each row of the party matrix represents one candidate.
-- The first column represents the number of candidate's own party supporters, the second column - the candidate's opposing party supporters, and the third column (optional) - the swing voters:
-
-![A=\begin{bmatrix}u_A(A_1)&u_B(A_1)&u_S(A_1)\\\\u_A(A_2) & u_B(A_2)&u_S(A_2)\\\\\end{bmatrix}](https://latex.codecogs.com/svg.latex?A=\begin{bmatrix}u_A(A_1)&u_B(A_1)&u_S(A_1)\\\\u_A(A_2) & u_B(A_2)&u_S(A_2)\\\\\end{bmatrix})
-
-![B=\begin{bmatrix}u_B(B_1)&u_A(B_1)&u_S(B_1)\\\\u_B(B_2)&u_A(B_2)&u_S(B_2)\\\\\end{bmatrix}](https://latex.codecogs.com/svg.latex?B=\begin{bmatrix}u_B(B_1)&u_A(B_1)&u_S(B_1)\\\\u_B(B_2)&u_A(B_2)&u_S(B_2)\\\\\end{bmatrix})
-
-- There may be more than 2 candidates per party.
-- The candidates are sorted in descending order according to the first column.
-- The winning odds are calculated according to one of the three models: Linear Link, Bradley-Terry, and Softmax.
-- Two parties are egoistic if candidates benefit (have the largest number) their own supporters more than those from the competing party.
+The implementation of the political game is based on the paper Chuang-Chieh Lin et al. [How Good Is a Two-Party Election Game?](https://arxiv.org/abs/2001.05692), 2020 ([more](https://romanakchurin.com/algorithmic-game-theory/political_game/)).
 
 ### Requirements
 
@@ -55,11 +38,3 @@ polgame.run_iterations(100)
 # 7: Price of Anarchy
 polgame.history[0]
 ```
-
-### Additional comments
-
-When voting, voters care about the following:
-
-1. Likeability of the candidates, for example how friendly they seem to be, how honest they are, etc.
-
-2. Policy that candidates introduce on the spectrum from liberal (Left) to conservative (Right) and how close the candidate is to the voter's position in the spectrum.
