@@ -12,17 +12,9 @@ The implementation of the political game is based on the paper Chuang-Chieh Lin 
 - Each row of the party matrix represents one candidate.
 - The first column represents the number of candidate's own party supporters, the second column - the candidate's opposing party supporters, and the third column (optional) - the swing voters:
 
-$$A =
-\begin{bmatrix}
-    u_A(A_1) & u_B(A_1) & u_S(A_1)\\\\
-    u_A(A_2) & u_B(A_2) & u_S(A_2)\\\\
-\end{bmatrix}$$
+![A=\begin{bmatrix}u_A(A_1)&u_B(A_1)&u_S(A_1)\\\\u_A(A_2) & u_B(A_2)&u_S(A_2)\\\\\end{bmatrix}](https://latex.codecogs.com/svg.latex?A=\begin{bmatrix}u_A(A_1)&u_B(A_1)&u_S(A_1)\\\\u_A(A_2) & u_B(A_2)&u_S(A_2)\\\\\end{bmatrix})
 
-$$B =
-\begin{bmatrix}
- u_B(B_1) & u_A(B_1) & u_S(B_1)\\\\
- u_B(B_2) & u_A(B_2) & u_S(B_2)\\\\
-\end{bmatrix}$$
+![B=\begin{bmatrix}u_B(B_1)&u_A(B_1)&u_S(B_1)\\\\u_B(B_2)&u_A(B_2)&u_S(B_2)\\\\\end{bmatrix}](https://latex.codecogs.com/svg.latex?B=\begin{bmatrix}u_B(B_1)&u_A(B_1)&u_S(B_1)\\\\u_B(B_2)&u_A(B_2)&u_S(B_2)\\\\\end{bmatrix})
 
 - There may be more than 2 candidates per party.
 - The candidates are sorted in descending order according to the first column.
